@@ -1,44 +1,59 @@
+using System.Reflection;
+using Catalog.Application.Handlers;
+using Catalog.Application.Mappers;
+using Catalog.Core.Repositories;
+using Catalog.Infrastructure.Data;
+using Catalog.Infrastructure.Repositories;
+using HealthChecks.UI.Client;
+using MediatR;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1",
+    new OpenApiInfo{Title = "Catalog.API", Version = "v1"}));
+
+builder.Services.AddControllers();
+builder.Services.AddApiVersioning();
+
+var mongodbConnectionString = builder.Configuration
+    .GetSection("DatabaseSettings:ConnectionString").Value;
+if (mongodbConnectionString != null)
+    builder.Services.AddHealthChecks()
+        .AddMongoDb(mongodbConnectionString, "Catalog MongoDb Health", HealthStatus.Degraded);
+//DI
+builder.Services.AddAutoMapper(typeof(ProductMappingProfile));
+builder.Services.AddMediatR(typeof(CreateProductHandler).GetTypeInfo().Assembly);
+builder.Services.AddScoped<ICatalogContext, CatalogContext>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IBrandRepository, ProductRepository>();
+builder.Services.AddScoped<ITypesRepository, ProductRepository>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.MapControllers();
+app.MapHealthChecks("/health", new HealthCheckOptions()
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog.API v1"));
 }
+
+app.UseRouting();
+
+app.UseStaticFiles();
+
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

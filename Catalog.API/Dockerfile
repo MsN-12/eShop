@@ -1,0 +1,26 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+#USER $APP_UID
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["Services/Catalog.API/Catalog.API.csproj", "Services/Catalog/Catalog.API/"]
+COPY ["Services/Catalog.Application/Catalog.Application.csproj", "Services/Catalog/Catalog.Application/"]
+COPY ["Services/Catalog.Core/Catalog.Core.csproj", "Services/Catalog/Catalog.Core/"]
+COPY ["Services/Catalog.Infrastructure/Catalog.Infrastructure.csproj", "Services/Catalog/Catalog.Infrastructure/"]
+RUN dotnet restore "Catalog.API/Catalog.API.csproj"
+COPY . .
+WORKDIR "/src/Services/Catlog/Catalog.API"
+RUN dotnet build "Catalog.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "Catalog.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Catalog.API.dll"]
