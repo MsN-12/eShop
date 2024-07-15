@@ -1,6 +1,8 @@
 using System.Reflection;
+using AspNet.CorrelationIdGenerator;
 using Catalog.Application.Handlers;
 using Catalog.Application.Mappers;
+using Catalog.Application.Queries;
 using Catalog.Core.Repositories;
 using Catalog.Infrastructure.Data;
 using Catalog.Infrastructure.Repositories;
@@ -26,11 +28,12 @@ if (mongodbConnectionString != null)
         .AddMongoDb(mongodbConnectionString, "Catalog MongoDb Health", HealthStatus.Degraded);
 //DI
 builder.Services.AddAutoMapper(typeof(ProductMappingProfile));
-builder.Services.AddMediatR(typeof(CreateProductHandler).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateProductHandler).GetTypeInfo().Assembly));
 builder.Services.AddScoped<ICatalogContext, CatalogContext>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IBrandRepository, ProductRepository>();
 builder.Services.AddScoped<ITypesRepository, ProductRepository>();
+builder.Services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
 
 var app = builder.Build();
 

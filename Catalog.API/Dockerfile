@@ -7,13 +7,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Services/Catalog.API/Catalog.API.csproj", "Services/Catalog/Catalog.API/"]
-COPY ["Services/Catalog.Application/Catalog.Application.csproj", "Services/Catalog/Catalog.Application/"]
-COPY ["Services/Catalog.Core/Catalog.Core.csproj", "Services/Catalog/Catalog.Core/"]
-COPY ["Services/Catalog.Infrastructure/Catalog.Infrastructure.csproj", "Services/Catalog/Catalog.Infrastructure/"]
+COPY ["Catalog.API/Catalog.API.csproj", "Catalog.API/"]
+COPY ["Catalog.Application/Catalog.Application.csproj", "Catalog.Application/"]
+COPY ["Catalog.Core/Catalog.Core.csproj", "Catalog.Core/"]
+COPY ["Catalog.Infrastructure/Catalog.Infrastructure.csproj", "Catalog.Infrastructure/"]
 RUN dotnet restore "Catalog.API/Catalog.API.csproj"
 COPY . .
-WORKDIR "/src/Services/Catlog/Catalog.API"
+WORKDIR "/src/Catalog.API"
 RUN dotnet build "Catalog.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
