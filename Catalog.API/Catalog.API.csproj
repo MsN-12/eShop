@@ -9,7 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-        <PackageReference Include="Asp.Versioning.WebApi" Version="7.1.0" />
         <PackageReference Include="AspNet.CorrelationIdGenerator" Version="1.0.0" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
         <PackageReference Include="Common.Logging" Version="3.4.1" />

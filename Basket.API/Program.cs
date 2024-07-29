@@ -16,18 +16,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddApiVersioning(options =>
     {
         options.ReportApiVersions = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
         options.ApiVersionReader = new UrlSegmentApiVersionReader();
     })
     .AddMvc()
     .AddApiExplorer(x =>
     {
         x.GroupNameFormat = "'v'VVV";
-        x.SubstituteApiVersionInUrl = true;
+        x.SubstituteApiVersionInUrl = false;
     });
     
 builder.Services.AddCors(options =>
@@ -73,7 +72,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog.API v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Basket.API v1"));
 }
 
 app.UseRouting();
