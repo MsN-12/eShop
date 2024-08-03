@@ -33,14 +33,12 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
+app.MapGrpcService<DiscountService>();
+
+app.MapGet("/", async context =>
 {
-    endpoints.MapGrpcService<DiscountService>();
-    endpoints.MapGet("/", async context =>
-    {
-        await context.Response.WriteAsync(
-            "Communication with gRPC endpoints must be made through a gRPC client.");
-    });
+    await context.Response.WriteAsync(
+        "Communication with gRPC endpoints must be made through a gRPC client.");
 });
 
 app.Run();
