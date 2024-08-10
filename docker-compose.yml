@@ -28,6 +28,14 @@ services:
   
   portainer:
     image: portainer/portainer-ce
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+  order.api:
+    image: ${DOCKER_REGISTRY-}orderapi
+    build:
+      context: .
+      dockerfile: Ordering.API/Dockerfile
+    
 
 
 volumes:

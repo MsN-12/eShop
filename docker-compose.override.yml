@@ -75,6 +75,25 @@ services:
       - "5050:80"
     volumes:
       - pgadmin_data:/root/.pgadmin
+  orderdb:
+    container_name: orderdb
+    environment:
+      SA_PASSWORD: "msn1234567"
+      ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1433:1433"
+
+  ordering.api:
+    container_name: ordering.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      #      - ASPNETCORE_URLS=http://*:9003
+      - "ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Rahul1234567"
+    depends_on:
+      - orderdb
+    ports:
+      - "9003:80"
 
 volumes:
   mongo_data:
