@@ -2,14 +2,14 @@ using System.Text.Json;
 using Catalog.Core.Entities;
 using MongoDB.Driver;
 
-namespace Catalog.Infrastructure.Data;
+namespace Infrastructure.Data;
 
 public class TypeContextSeed
 {
     public static void SeedData(IMongoCollection<ProductType> typeCollection)
     {
         bool checkTypes = typeCollection.Find(b => true).Any();
-        string path = Path.Combine("../Catalog.Infrastructure", "Data", "SeedData", "types.json");
+        string path = Path.Combine("../Catalog.Persistence", "Data", "SeedData", "types.json");
         if (!checkTypes)
         {
             var typesData = File.ReadAllText(path);

@@ -2,7 +2,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 
-namespace Ordering.API.Extensions;
+namespace Ordering.APi.Extensions;
 
 public static class DbExtension
 {

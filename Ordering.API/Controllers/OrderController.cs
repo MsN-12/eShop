@@ -5,7 +5,7 @@ using Ordering.Application.Commands;
 using Ordering.Application.Queries;
 using Ordering.Application.Responses;
 
-namespace Ordering.API.Controllers;
+namespace Ordering.APi.Controllers;
 
 public class OrderController : ApiController
 {

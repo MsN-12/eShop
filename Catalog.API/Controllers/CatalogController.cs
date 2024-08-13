@@ -5,7 +5,6 @@ using Catalog.Application.Queries;
 using Catalog.Application.Responses;
 using Catalog.Core.Specs;
 using Common.Logging;
-using Core.Specs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

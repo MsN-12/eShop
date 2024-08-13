@@ -1,6 +1,5 @@
 using Catalog.Core.Entities;
 using Catalog.Core.Specs;
-using Core.Specs;
 
 namespace Catalog.Core.Repositories;
 

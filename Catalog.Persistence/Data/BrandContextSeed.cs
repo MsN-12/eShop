@@ -2,14 +2,14 @@ using System.Text.Json;
 using Catalog.Core.Entities;
 using MongoDB.Driver;
 
-namespace Catalog.Infrastructure.Data;
+namespace Infrastructure.Data;
 
 public static class BrandContextSeed
 {
     public static void SeedData(IMongoCollection<ProductBrand> brandCollection)
     {
         bool checkBrands = brandCollection.Find(b => true).Any();
-        string path = Path.Combine("../Catalog.Infrastructure", "Data", "SeedData", "brands.json");
+        string path = Path.Combine("../Catalog.Persistence", "Data", "SeedData", "brands.json");
         if (!checkBrands)
         {
             var brandsData = File.ReadAllText(path);

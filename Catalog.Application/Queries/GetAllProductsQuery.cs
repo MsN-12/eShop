@@ -1,6 +1,5 @@
 using Catalog.Application.Responses;
 using Catalog.Core.Specs;
-using Core.Specs;
 using MediatR;
 
 namespace Catalog.Application.Queries;
