@@ -12,6 +12,9 @@
         <PackageReference Include="AspNet.CorrelationIdGenerator" Version="1.0.0" />
         <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
+        <PackageReference Include="MassTransit" Version="7.3.0" />
+        <PackageReference Include="MassTransit.AspNetCore" Version="7.3.0" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
@@ -24,7 +27,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Basket.Application\Basket.Application.csproj" />
-      <ProjectReference Include="..\Basket.Persistence\Basket.Persistence.csproj" />
+      <ProjectReference Include="..\Basket.Infrastructure\Basket.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

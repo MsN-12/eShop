@@ -6,6 +6,8 @@ using Basket.Application.Mappers;
 using Basket.Application.Queries;
 using Basket.Application.Responses;
 using Basket.Core.Entities;
+using EventBus.Messages.Events;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +17,16 @@ public class BasketController : ApiController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<BasketController> _logger;
+    private readonly IPublishEndpoint _publishEndpoint;
     private readonly ICorrelationIdGenerator _correlationIdGenerator;
     private readonly DiscountGrpcService _discountGrpcService;
 
-    public BasketController(IMediator mediator, ILogger<BasketController> logger,
+    public BasketController(IMediator mediator, ILogger<BasketController> logger, IPublishEndpoint publishEndpoint,
         ICorrelationIdGenerator correlationIdGenerator, DiscountGrpcService discountGrpcService)
     {
         _mediator = mediator;
         _logger = logger;
+        _publishEndpoint = publishEndpoint;
         _correlationIdGenerator = correlationIdGenerator;
         _discountGrpcService = discountGrpcService;
         _logger.LogInformation("CorrelationId {correlationId}:", _correlationIdGenerator.Get());
@@ -66,6 +70,10 @@ public class BasketController : ApiController
     [HttpPost]
     [ProducesResponseType((int) HttpStatusCode.Accepted)]
     [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+    [Route("[action]")]
+    [HttpPost]
+    [ProducesResponseType((int) HttpStatusCode.Accepted)]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
     {
         //Get existing basket with username
@@ -76,9 +84,13 @@ public class BasketController : ApiController
             return BadRequest();
         }
 
-        //remove the basket
+        var eventMesg = BasketMapper.Mapper.Map<BasketCheckoutEvent>(basketCheckout);
+        eventMesg.TotalPrice = basket.TotalPrice;
+        eventMesg.CorrelationId = _correlationIdGenerator.Get();
+        await _publishEndpoint.Publish(eventMesg);
+        
         var deleteQuery = new DeleteBasketByUserNameQuery(basketCheckout.UserName);
         await _mediator.Send(deleteQuery);
         return Accepted();
-    }
+    } 
 }

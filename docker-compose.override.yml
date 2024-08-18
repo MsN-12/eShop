@@ -35,17 +35,19 @@ services:
     depends_on:
     - catalogdb
     ports:
-    - "3000:8080"
+    - "3000:8080" 
   basket.api:
     container_name: basket.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings__ConnectionString=redis://basketdb:6379"
       - "GrpcSettings__DiscountUrl=http://discount.api"
+      - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
     depends_on:
     - basketdb
+    - rabbitmq
     ports:
-    - "3001:8080"
+    - "3001:8080" 
   discount.api:
     container_name: discount.api
     environment:
@@ -55,7 +57,6 @@ services:
       - discountdb
     ports:
       - "3002:80"
-
   portainer:
     container_name: portainer
     restart: always
@@ -65,6 +66,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+    
   pgadmin:
     container_name: pgadmin
     environment:
@@ -75,6 +77,13 @@ services:
       - "5050:80"
     volumes:
       - pgadmin_data:/root/.pgadmin
+       
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   orderdb:
     container_name: orderdb
     environment:
@@ -83,18 +92,18 @@ services:
     restart: always
     ports:
       - "1433:1433"
-
   ordering.api:
     container_name: ordering.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       #      - ASPNETCORE_URLS=http://*:9003
       - "ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Rahul1234567"
+      - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
     depends_on:
       - orderdb
+      - rabbitmq
     ports:
-      - "9003:80"
-
+      - "3003:80"
 volumes:
   mongo_data:
   portatiner_data:

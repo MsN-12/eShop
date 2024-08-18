@@ -3,41 +3,49 @@ version: "3.4"
 services:
   catalogdb:
     image: mongo
+    
   basketdb:
     image: redis:alpine 
+    
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalog
     build:
       context: .
       dockerfile: Catalog.API/Dockerfile
+      
   basket.api:
     image: ${DOCKER_REGISTRY-}basket
     build:
       context: .
       dockerfile: Basket.API/Dockerfile
+      
   discount.api:
     image: ${DOCKER_REGISTRY-}discountapi
     build:
       context: .
       dockerfile: Discount.API/Dockerfile
+      
   discountdb:
     image: postgres
-
+    
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    
   pgadmin:
     image: dpage/pgadmin4
-  
+    
   portainer:
     image: portainer/portainer-ce
+    
   orderdb:
     image: mcr.microsoft.com/mssql/server:2017-latest
-  order.api:
+    
+  ordering.api:
     image: ${DOCKER_REGISTRY-}orderapi
     build:
       context: .
       dockerfile: Ordering.API/Dockerfile
     
-
-
 volumes:
   mongo_data:
   portainer_data:

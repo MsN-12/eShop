@@ -9,6 +9,7 @@ using Basket.Core.Repositories;
 using Basket.Infrastructure.Repositories;
 using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
+using MassTransit;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
@@ -57,6 +58,14 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
 
 builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration.GetValue<string>("CacheSettings:ConnectionString"), "Redis Health", HealthStatus.Degraded);
+builder.Services.AddMassTransit(config =>
+{
+   config.UsingRabbitMq((ct, cfg) =>
+   {
+       cfg.Host(builder.Configuration.GetValue<string>("EventBusSettings:HostAddress"));
+   }); 
+});
+builder.Services.AddMassTransitHostedService();
 
 builder.Services.AddSwaggerGen(options =>
 {
