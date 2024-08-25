@@ -2,17 +2,19 @@ using System.Reflection;
 using AspNet.CorrelationIdGenerator;
 using Catalog.Application.Handlers;
 using Catalog.Application.Mappers;
-using Catalog.Application.Queries;
 using Catalog.Core.Repositories;
+using Common.Logging;
 using HealthChecks.UI.Client;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
-using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(Logging.ConfigureLogger);
 
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1",
     new OpenApiInfo{Title = "Catalog.API", Version = "v1"}));

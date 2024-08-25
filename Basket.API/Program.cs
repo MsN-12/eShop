@@ -7,15 +7,19 @@ using Basket.Application.Handlers;
 using Basket.Application.Mappers;
 using Basket.Core.Repositories;
 using Basket.Infrastructure.Repositories;
+using Common.Logging;
 using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(Logging.ConfigureLogger);
 
 builder.Services.AddControllers();
 

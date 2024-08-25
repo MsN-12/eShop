@@ -1,5 +1,6 @@
 
 using Azure.Identity;
+using Common.Logging;
 using EventBus.Messages.Common;
 using HealthChecks.UI.Client;
 using MassTransit;
@@ -10,8 +11,11 @@ using Ordering.Application.Extensions;
 using Ordering.Application.Mappers;
 using Ordering.Infrastructure.Data;
 using Ordering.Infrastructure.Extensions;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(Logging.ConfigureLogger);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,12 +1,16 @@
 using System.Reflection;
 using AspNet.CorrelationIdGenerator;
+using Common.Logging;
 using Discount.API.Services;
 using Discount.Application.Handlers;
 using Discount.Application.Mapper;
 using Discount.Core.Repositories;
 using Discount.Infrastructure.Repositories;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(Logging.ConfigureLogger);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
