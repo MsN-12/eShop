@@ -1,4 +1,4 @@
-# .NET Training Project
+# .NET Microservice Project
 
 ## Overview
 Welcome to my .NET Training Project! This project showcases my expertise in building a microservices-based e-commerce platform using .NET technologies. The platform includes functionalities for catalog management, ordering, discounts, and basket management.
